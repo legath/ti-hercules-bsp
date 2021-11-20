@@ -34,7 +34,7 @@ pub unsafe extern "C" fn tms570_startup() -> ! {
     #[cfg(feature = "errata66")]
     siliconcr4::errata66();
 
-    let wdog: rti::ChipWatchDog = DWD::new();
+    let wdog: rti::RtiController = DWD::new();
 
     let sysex = sysexc::SysException::new();
     if sysex.power_on() {

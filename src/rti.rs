@@ -1,5 +1,6 @@
 use crate::config::RTICLK1;
 use crate::dwd::{WdViolation, DWD};
+use crate::syscounter::SysCounter;
 ///
 /// RTI Control Module
 ///
@@ -89,13 +90,13 @@ struct RtiRegisters {
 const RTI_BASE_ADDR: *const RtiRegisters = 0xFFFF_FC00 as *const RtiRegisters;
 
 #[derive(Clone, Copy)]
-pub struct ChipWatchDog {
+pub struct RtiController {
     regs: &'static RtiRegisters,
 }
 
-impl DWD for ChipWatchDog {
-    fn new() -> ChipWatchDog {
-        ChipWatchDog {
+impl DWD for RtiController {
+    fn new() -> RtiController {
+        RtiController {
             regs: unsafe { &*RTI_BASE_ADDR },
         }
     }
@@ -151,5 +152,36 @@ impl DWD for ChipWatchDog {
 
     fn count_down(&self) -> u32 {
         self.regs.DWDCNTR.get()
+    }
+}
+
+impl SysCounter for RtiController {
+    fn new() -> RtiController {
+        let rti = RtiController {
+            regs: unsafe { &*RTI_BASE_ADDR },
+        };
+        rti.init();
+        rti
+    }
+    fn init(&self) {
+
+    }
+    fn start_counter(&self, counter: usize){
+        self.regs.GCTRL.set({
+            let mut gctrl = self.regs.GCTRL.get();
+            gctrl |=1 << (counter & 3);
+            gctrl
+        });
+    }
+    fn stop_counter(&self, counter: usize){
+        self.regs.GCTRL.set({
+            let mut gctrl = self.regs.GCTRL.get();
+            gctrl &=!(1 << (counter & 3));
+            gctrl
+        });
+    }
+    fn reset_counter(&self, counter: usize){
+        self.regs.Cnt[counter].UCx.set(0);
+        self.regs.Cnt[counter].FRCx.set(0);
     }
 }

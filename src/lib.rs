@@ -42,6 +42,7 @@ pub mod sysexc;
 pub mod system;
 pub mod tcram;
 pub mod vim;
+pub mod syscounter;
 
 extern "C" {
     static mut _heap_start: u32;
