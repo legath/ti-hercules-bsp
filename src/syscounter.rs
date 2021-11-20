@@ -4,4 +4,5 @@ pub trait SysCounter {
     fn start_counter(&self, counter: usize);
     fn stop_counter(&self, counter: usize);
     fn reset_counter(&self, counter: usize);
+    fn set_period(&self, compare: usize, period: u32);
 }

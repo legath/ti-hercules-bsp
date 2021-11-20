@@ -184,4 +184,7 @@ impl SysCounter for RtiController {
         self.regs.Cnt[counter].UCx.set(0);
         self.regs.Cnt[counter].FRCx.set(0);
     }
+    fn set_period(&self, compare: usize, period: u32){
+        self.regs.Cmp[compare].UDCPx.set(period);
+    }
 }
