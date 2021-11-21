@@ -27,6 +27,7 @@ cortexr4 = { path = "arch/cortex-r4" }
 siliconcr4 = { git = "https://github.com/paoloteti/silicon-cr4.git" }
 vcell = "0.1.2"
 r0 = "1.0.0"
+bitflags = "1.3.2"
 
 [profile.dev.package.vcell]
 opt-level = 3

@@ -1,12 +1,25 @@
 use crate::config::RTICLK1;
 use crate::dwd::{WdViolation, DWD};
 use crate::syscounter::SysCounter;
+use bitflags::bitflags;
 ///
 /// RTI Control Module
 ///
 use core::mem;
 use vcell::VolatileCell;
 
+
+bitflags! {
+    #[repr(C)]
+    struct GCTRL: u32 {
+        const CNT0EN = (1<<0);
+        const CNT1EN = (1<<1);
+        const NTU0 = (0<<16);
+        const NTU1 = (5<<16);
+        const NTU2 = (0xA<<16);
+        const NTU3 = (0xF<<16);
+    }
+}
 #[repr(C)]
 #[allow(non_snake_case)]
 struct Counter {
@@ -156,14 +169,19 @@ impl DWD for RtiController {
 }
 
 impl SysCounter for RtiController {
-    fn new() -> RtiController {
+    fn new(debug_run: bool) -> RtiController {
         let rti = RtiController {
             regs: unsafe { &*RTI_BASE_ADDR },
         };
-        rti.init();
+        rti.init(debug_run);
         rti
     }
-    fn init(&self) {
+    fn init(&self, debug_run: bool) {
+        /** - Setup NTU source, debug options and disable both counter blocks */
+        self.regs.GCTRL.set(0);
+        self.regs.TBCTRL.set(0);
+        self.regs.COMPCTRL.set(0);
+
 
     }
     fn start_counter(&self, counter: usize){
