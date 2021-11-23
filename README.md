@@ -28,6 +28,8 @@ f021_fapi = { git = "https://github.com/paoloteti/f021-flash-api.git" }
 ```
 
 Example code for TMS570LS3137 can be found [here](https://github.com/paoloteti/tms570ls3137)
+Example code for RM46L852 can be found [here](https://github.com/legath/rm46l852)
+
 
 ## License
 
