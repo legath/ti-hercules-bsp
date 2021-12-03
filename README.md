@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.com/paoloteti/ti-hercules-bsp.svg?branch=master)](https://travis-ci.com/paoloteti/ti-hercules-bsp)
-
+[![CI](https://github.com/legath/ti-hercules-bsp/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/legath/ti-hercules-bsp/actions/workflows/ci.yml)
 # TMS570 BSP
 
 Bare Metal Board Support Package for Texas Instruments Cortex-R4F/R5F TMS570
@@ -28,6 +27,8 @@ f021_fapi = { git = "https://github.com/paoloteti/f021-flash-api.git" }
 ```
 
 Example code for TMS570LS3137 can be found [here](https://github.com/paoloteti/tms570ls3137)
+Example code for RM46L852 can be found [here](https://github.com/legath/rm46l852)
+
 
 ## License
 
