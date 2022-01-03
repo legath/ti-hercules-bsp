@@ -1,5 +1,5 @@
 /// VCLK frequency [MHz]
-pub const VCLK: u32 = MHz!(80);
+pub const VCLK: u32 = MHz!(220);
 
 /// LPO value to use if not available in OTP memory (Low-frequency trim value)
 ///
@@ -15,7 +15,7 @@ pub const VCLK: u32 = MHz!(80);
 pub const LPO: u16 = 0x10;
 
 /// RTI1 Clock Frequency [MHz]
-pub const RTICLK1: u32 = MHz!(80);
+pub const RTICLK1: u32 = MHz!(110);
 
 /// LPC preload as used by the ESM driver
 pub const LPC_PRELOAD: u32 = 16384;

@@ -20,6 +20,18 @@ bitflags! {
         const NTU3 = (0xF<<16);
     }
 }
+
+#[derive(Clone, Copy)]
+pub enum Notification{
+    COMPARE0 = 1,
+    COMPARE1 = 2,
+    COMPARE2 = 4,
+    COMPARE3 = 8,
+    TIMEBASE = 0x10000,
+    COUNTER0 = 0x20000,
+    COUNTER1 = 0x40000
+}
+
 #[repr(C)]
 #[allow(non_snake_case)]
 struct Counter {
@@ -202,7 +214,10 @@ impl SysCounter for RtiController {
         self.regs.Cnt[counter].UCx.set(0);
         self.regs.Cnt[counter].FRCx.set(0);
     }
-    fn set_period(&self, compare: usize, period: u32){
-        self.regs.Cmp[compare].UDCPx.set(period);
+    fn set_period(&self, compare_id: usize, period: u32){
+        self.regs.Cmp[compare_id].COMPx.set(period);
+    }
+    fn enable_notification(&self){
+
     }
 }

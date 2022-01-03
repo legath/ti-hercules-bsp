@@ -1,5 +1,5 @@
 use vcell::VolatileCell;
-
+use crate::iomm;
 #[cfg(target_endian = "little")]
 #[repr(C)]
 #[allow(non_snake_case)]
@@ -112,6 +112,13 @@ const PWM_ADDR: [*const etPwmRegisters; 7] = [PWM1_BASE_ADDR, PWM2_BASE_ADDR, PW
                                               PWM7_BASE_ADDR];
 
 #[derive(Copy, Clone)]
+pub enum RunMode {
+    SoftStopAfterIncDec = 0,
+    SoftStopAfterCycle = 0x4000,
+    FreeRun = 0x8000,
+}
+
+#[derive(Copy, Clone)]
 pub enum PwmId {
     One = 0,
     Two = 1,
@@ -134,6 +141,7 @@ impl Pwm{
             id,
             regs: unsafe { &*PWM_ADDR[id as usize] },
         };
+        pwm.init();
         pwm
     }
     pub fn init(&self) {
@@ -141,5 +149,18 @@ impl Pwm{
     }
     pub fn setPeriod(&self, Period: u16){
         self.regs.TBPRD.set(Period);
+    }
+    pub fn setCount(&self, Count: u16){
+        self.regs.TBCTR.set(Count);
+    }
+    pub fn setRunMode(&self, Mode: RunMode){
+        let mut temp_tbctl = self.regs.TBCTL.get();
+        self.regs.TBCTL.set(temp_tbctl | Mode as u16);
+    }
+    pub fn setCmpA(&self, value: u16){
+        self.regs.CMPA.set(value);
+    }
+    pub fn setCmpB(&self, value: u16){
+        self.regs.CMPB.set(value);
     }
 }
