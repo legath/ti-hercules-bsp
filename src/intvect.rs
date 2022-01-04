@@ -1,7 +1,7 @@
 ///
 /// ARM Cortex-R Vectors Table
 ///
-
+use core::arch::global_asm;
 #[allow(dead_code)]
 extern "C" {
     fn reset();
