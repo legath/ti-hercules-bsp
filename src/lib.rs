@@ -45,6 +45,9 @@ pub mod vim;
 pub mod syscounter;
 pub mod pwm;
 
+mod spireg;
+pub mod spi;
+
 extern "C" {
     static mut _heap_start: u32;
     static mut _heapsize: u32;

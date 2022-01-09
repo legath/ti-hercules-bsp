@@ -92,3 +92,12 @@ macro_rules! wait_cycle {
         }
     };
 }
+#[macro_export]
+macro_rules! pub_struct {
+    ($name:ident {$($field:ident: $t:ty,)*}) => {
+        #[repr(C)]
+        pub struct $name {
+            $(pub $field: $t),*
+        }
+    }
+}
