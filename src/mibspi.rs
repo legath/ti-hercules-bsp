@@ -61,9 +61,10 @@ pub enum MibSpiID {
 
 
 #[allow(dead_code)]
-mod flags {
-    pub const ANALOG: u32 = 0;
-    pub const DIGITAL: u32 = 1;
+
+pub enum lbType {
+     ANALOG =  0,
+     DIGITAL = 1,
 }
 
 #[allow(dead_code)]
@@ -104,10 +105,10 @@ impl MibSpi {
         let int0 = self.regs.INT0.get() & !enablehighz;
         self.regs.INT0.set(int0 | enablehighz);
     }
-    pub fn enable_loopback(&self, t: u32) {
+    pub fn enable_loopback(&self, t: lbType) {
         /// Clear Loopback incase enabled already
         self.regs.IOLPKTSTCR.set(0);
-        self.regs.IOLPKTSTCR.set(0x00000A00 | (t << 1));
+        self.regs.IOLPKTSTCR.set(0x00000A00 | ((t as u32) << 1));
     }
 
     pub fn disable_loopback(&self) {
