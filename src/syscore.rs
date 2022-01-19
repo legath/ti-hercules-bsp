@@ -1,3 +1,4 @@
+use core::arch::asm;
 extern "C" {
     pub fn _cpu_stack();
 }
@@ -8,7 +9,7 @@ extern "C" {
 /// failure at startup or at first mode switch.
 #[inline(never)]
 pub unsafe fn init_core_registers() {
-    llvm_asm!(
+    asm!(
         "
         /* After reset, the CPU is in the Supervisor mode (M = 10011) */
         mov r0, lr
@@ -61,11 +62,12 @@ pub unsafe fn init_core_registers() {
         cps #31
         mov lr, r0
         mrs r1,cpsr
-        msr spsr_cxsf, r1
-    "::: "memory" : "volatile");
+        msr spsr_cxsf, r1",
+    options(nostack, preserves_flags)
+    );
 
     #[cfg(vfp)]
-    llvm_asm!(
+    asm!(
         "
         mrc   p15,     #0x00,      r2,       c1, c0, #0x02
         orr   r2,      r2,         #0xF00000
@@ -88,17 +90,20 @@ pub unsafe fn init_core_registers() {
         fmdrr d12, r1, r1
         fmdrr d13, r1, r1
         fmdrr d14, r1, r1
-        fmdrr d15, r1, r1
-    "::: "memory" : "volatile");
+        fmdrr d15, r1, r1",
+    options(nostack, preserves_flags)
+    );
 
-    llvm_asm!(
+    asm!(
         "
         bl    1f
     1:  bl    2f
     2:  bl    3f
     3:  bl    4f
-    4:  bx r0
-    "::: "memory" : "volatile");
+    4:  bx r0 ",
+    options(nostack, preserves_flags)
+    );
+
 }
 
 #[inline(always)]
@@ -108,79 +113,87 @@ pub unsafe fn init_stack_pointers() {
 
 #[inline]
 pub unsafe fn flash_ecc_enable() {
-    llvm_asm!("
+    asm!("
         mrc p15, #0x00, r0, c1, c0, #0x01
         orr r0, r0, #0x02000000
-        mcr p15, #0x00, r0, c1, c0, #0x01
-    "::: "memory" : "volatile");
+        mcr p15, #0x00, r0, c1, c0, #0x01",
+        options(nostack, preserves_flags)
+    );
 }
 
 #[inline]
 pub unsafe fn flash_ecc_disable() {
-    llvm_asm!("
+    asm!("
         mrc p15, #0x00, r0, c1, c0, #0x01
         bic r0, r0, #0x02000000
-        mcr p15, #0x00, r0, c1, c0, #0x01
-   "::: "memory" : "volatile");
+        mcr p15, #0x00, r0, c1, c0, #0x01",
+    options(nostack, preserves_flags)
+    );
 }
 
 /// Enable Event Bus Export
 #[inline]
 pub unsafe fn event_bus_export_enable() {
-    llvm_asm!("
+    asm!("
         mrc p15, #0x00, r0, c9, c12, #0x00
         orr r0, r0, #0x10
-        mcr p15, #0x00, r0, c9, c12, #0x00
-    "::: "memory" : "volatile");
+        mcr p15, #0x00, r0, c9, c12, #0x00",
+    options(nostack, preserves_flags)
+    );
 }
 
 /// Disable Event Bus Export
 #[inline]
 pub unsafe fn event_bus_export_disable() {
-    llvm_asm!("
+    asm!("
         mrc p15, #0x00, r0, c9, c12, #0x00
         bic r0, r0, #0x10
-        mcr p15, #0x00, r0, c9, c12, #0x00
-    "::: "memory" : "volatile");
+        mcr p15, #0x00, r0, c9, c12, #0x00",
+    options(nostack, preserves_flags)
+    );
 }
 
 #[inline]
 pub unsafe fn ram_ecc_enable() {
-    llvm_asm!("
+    asm!("
         mrc p15, #0x00, r0, c1, c0, #0x01
         orr r0, r0, #0x0C000000
-        mcr p15, #0x00, r0, c1, c0, #0x01
-    "::: "memory" : "volatile");
+        mcr p15, #0x00, r0, c1, c0, #0x01",
+    options(nostack, preserves_flags)
+    );
 }
 
 #[inline]
 pub unsafe fn ram_ecc_disable() {
-    llvm_asm!("
+    asm!("
         mrc p15, #0x00, r0, c1, c0, #0x01
         bic r0, r0, #0x0C000000
-        mcr p15, #0x00, r0, c1, c0, #0x01
-    "::: "memory" : "volatile");
+        mcr p15, #0x00, r0, c1, c0, #0x01",
+    options(nostack, preserves_flags)
+    );
 }
 
 /// Enable Offset via Vic controller
 #[inline]
 pub unsafe fn irq_vic_enable() {
-    llvm_asm!("
+    asm!("
         mrc p15, #0, r0, c1, c0, #0;
         orr r0, r0, #0x01000000;
-        mcr p15, #0, r0, c1, c0, #0
-    "::: "memory" : "volatile");
+        mcr p15, #0, r0, c1, c0, #0",
+    options(nostack, preserves_flags)
+    );
 }
 
 /// Enable Vector Floating Point unit
 #[inline]
 pub unsafe fn vfp_enable() {
     #[cfg(vfp)]
-    llvm_asm!("
+    asm!("
         mrc  p15, #0x00, r0, c1, c0, #0x02
         orr  r0,  r0, #0xF00000
         mcr  p15, #0x00, r0, c1, c0, #0x02
         mov  r0,  #0x40000000
-        fmxr fpexc,r0
-    "::: "memory" : "volatile");
+        fmxr fpexc,r0",
+    options(nostack, preserves_flags)
+    );
 }
