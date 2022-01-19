@@ -269,6 +269,14 @@ register_bitfields! {
             TG5 = 6,
             TG6 = 7,
             TG7 = 8,
+            TG8 = 9,
+            TG9 = 10,
+            TG10 = 11,
+            TG11 = 12,
+            TG12 = 13,
+            TG13 = 14,
+            TG14 = 15,
+            TG15 = 16,
         ],
         LPEND OFFSET(8) NUMBITS(7) [],
     ],
@@ -301,47 +309,39 @@ pub struct RegisterBlock {
     FLG: ReadWrite<u32, FLG::Register>,
     // Function Pin Enable
     PC0: ReadWrite<u32, PC0::Register>,
-
-    PC1: ReadWrite<u32>,
     // Pin Direction
-    PC2: ReadWrite<u32>,
+    PC1: ReadWrite<u32>,
     // Pin Input Latch
-    PC3: ReadWrite<u32>,
+    PC2: ReadWrite<u32>,
     // Pin Output Latch
-    PC4: ReadWrite<u32>,
+    PC3: ReadWrite<u32>,
     // Output Pin Set
-    PC5: ReadWrite<u32>,
+    PC4: ReadWrite<u32>,
     // Output Pin Clr
-    PC6: ReadWrite<u32>,
+    PC5: ReadWrite<u32>,
     // Open Drain Output Enable
-    PC7: ReadWrite<u32>,
+    PC6: ReadWrite<u32>,
     // Pullup/Pulldown Disable
-    PC8: ReadWrite<u32>,
+    PC7: ReadWrite<u32>,
     // Pullup/Pulldown Selection
-    DAT0: ReadWrite<u32>,
+    PC8: ReadWrite<u32>,
     // Transmit Data
-    DAT1: ReadWrite<u32>,
+    DAT0: ReadWrite<u32>,
     // Transmit Data with Format and Chip Select
-    BUF: ReadWrite<u32>,
+    DAT1: ReadWrite<u32>,
     // Receive Buffer
-    EMU: ReadWrite<u32>,
+    BUF: ReadWrite<u32>,
     // Emulation Receive Buffer
-    DELAY: ReadWrite<u32>,
+    EMU: ReadWrite<u32>,
     // Delays
-    DEF: ReadWrite<u32>,
+    DELAY: ReadWrite<u32>,
     // Default Chip Select
-    FMT0: ReadWrite<u32>,
-    // Data Format 0
-    FMT1: ReadWrite<u32>,
-    // Data Format 1
-    FMT2: ReadWrite<u32>,
-    // Data Format 2
-    FMT3: ReadWrite<u32>,
-    // Data Format 3
-    INTVECT0: ReadWrite<u32>,
-    // Interrupt Vector 0
-    INTVECT1: ReadWrite<u32>,
-    // Interrupt Vector 1
+    DEF: ReadWrite<u32>,
+    // Data Format
+    FMT: [ReadWrite<u32>;4],
+    // Interrupt Vector
+    INTVECT: [ReadWrite<u32>;2],
+
     SRSEL: ReadWrite<u32>,
     // Slew Rate Select
     PMCTRL: ReadWrite<u32>,
