@@ -11,7 +11,8 @@ The TMS570 family integrates dual Cortex-R4F and Cortex-R5F processors in lock-s
 ## Getting started
 
 * Rust nightly as default toolchain (2018 edition)
-  * Latest tested release: `rustc 1.50.0-nightly (1c389ffef 2020-11-24).
+  * Latest tested release: ` rustc 1.60.0-nightly (9ad5d82f8 2022-01-18)`
+  
     Any other recent nightly release should work as well.
 * Add an armebv7r target:
   * Hard-float: `rustup target add armebv7r-none-eabihf`
@@ -22,11 +23,12 @@ The TMS570 family integrates dual Cortex-R4F and Cortex-R5F processors in lock-s
 ## How to use
 
 ```
-tms570 = { git = "https://github.com/paoloteti/ti-hercules-bsp.git" }
+tms570 = { git = "https://github.com/legath/ti-hercules-bsp.git" }
 f021_fapi = { git = "https://github.com/paoloteti/f021-flash-api.git" }
 ```
 
 Example code for TMS570LS3137 can be found [here](https://github.com/paoloteti/tms570ls3137)
+
 Example code for RM46L852 can be found [here](https://github.com/legath/rm46l852)
 
 
