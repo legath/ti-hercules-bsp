@@ -4,8 +4,9 @@ use {
     vcell::VolatileCell,
     super::spireg::SpiRegisters,
     tock_registers::{
-        interfaces::{Readable, Writeable},
+
         register_bitfields,
+        register_structs,
         registers::{ReadOnly, ReadWrite, WriteOnly},
     },
 };
@@ -293,6 +294,50 @@ register_bitfields! {
 
 
 }
+
+register_structs! {
+    #[allow(non_snake_case)]
+    RegisterBlock1 {
+        (0x00=> GCR0: ReadWrite<u32, GCR0::Register>),
+        (0x04=> GCR1: ReadWrite<u32, GCR1::Register>),
+        (0x08=> INT0: ReadWrite<u32, INT0::Register>),
+        (0x0c=> LVL : ReadWrite<u32, LVL::Register>),
+        (0x10=> FLG : ReadWrite<u32, FLG::Register>),
+        (0x14=> PC0 : ReadWrite<u32, PC0::Register>),
+        (0x18=> PC1 : ReadWrite<u32, PC1::Register>),
+        (0x1c=> PC2 : ReadWrite<u32, PC2::Register>),
+        (0x20=> PC3 : ReadWrite<u32, PC3::Register>),
+        (0x24=> PC4 : ReadWrite<u32, PC4::Register>),
+        (0x28=> PC5 : ReadWrite<u32, PC5::Register>),
+        (0x2c=> PC6 : ReadWrite<u32, PC6::Register>),
+        (0x30=> PC7 : ReadWrite<u32, PC7::Register>),
+        (0x34=> PC8 : ReadWrite<u32, PC8::Register>),
+        (0x38=> DAT0 : ReadWrite<u32, DAT0::Register>),
+        (0x3c=> DAT1 : ReadWrite<u32, DAT1::Register>),
+        (0x40=> BUF : ReadWrite<u32, BUF::Register>),
+        (0x44=> EMU : ReadWrite<u32, EMU::Register>),
+        (0x48=> DELAY : ReadWrite<u32, DELAY::Register>),
+        (0x4C=> DEF : ReadWrite<u32, DEF::Register>),
+        (0x50=> FMT : [ReadWrite<u32, FMT::Register>; 4]),
+        (0x60=> INTVECT : [ReadWrite<u32, INTVECT::Register>; 2]),
+        (0x68=> PC9 : ReadWrite<u32>), ///will PC9, at this time not needed
+        (0x6c=> PMCTRL : ReadWrite<u32>),
+        (0x70=> SPIE : ReadWrite<u32, MIBSPIE::Register>),
+        (0x74=> TGITENST : ReadWrite<u32, TGITENST::Register>),
+        (0x78=> TGITENCR : ReadWrite<u32, TGITENCR::Register>),
+        (0x7c=> TGITLVST : ReadWrite<u32, TGITLVST::Register>),
+        (0x80=> TGITLVCR : ReadWrite<u32, TGITLVCR::Register>),
+        (0x84=> TGINTFLG : ReadWrite<u32, TGINTFLG::Register>),
+        (0x88 => __reserved_1),
+        (0x90=> TICKCNT : ReadWrite<u32, TICKCNT::Register>),
+        (0x94=> LTGPEND : ReadWrite<u32, LTGPEND::Register>),
+        (0x98=> TGCTRL : [ReadWrite<u32, TGCTRL::Register>; 8]), ///CHECK IT!!!!
+
+        (0x140 => @END),
+    }
+}
+
+
 
 #[allow(non_snake_case)]
 #[repr(C)]
