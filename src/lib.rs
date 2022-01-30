@@ -52,7 +52,6 @@ extern "C" {
 }
 
 #[no_mangle]
-#[naked]
 pub unsafe extern "C" fn reset() -> ! {
     startup::tms570_startup()
 }

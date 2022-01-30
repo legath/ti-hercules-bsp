@@ -22,7 +22,7 @@ extern "C" {
     static mut _sidata: u32;
 }
 
-#[naked]
+
 pub unsafe extern "C" fn tms570_startup() -> ! {
     syscore::init_core_registers();
     syscore::init_stack_pointers();
