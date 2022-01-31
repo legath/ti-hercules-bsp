@@ -1,8 +1,8 @@
+use tock_registers::interfaces::{ReadWriteable, Writeable};
 ///classic spi, unbuffered
 
 use {
     vcell::VolatileCell,
-    super::spireg::SpiRegisters,
     tock_registers::{
 
         register_bitfields,
@@ -297,7 +297,7 @@ register_bitfields! {
 
 register_structs! {
     #[allow(non_snake_case)]
-    RegisterBlock1 {
+    SpiRegisterBlock {
         (0x00=> GCR0: ReadWrite<u32, GCR0::Register>),
         (0x04=> GCR1: ReadWrite<u32, GCR1::Register>),
         (0x08=> INT0: ReadWrite<u32, INT0::Register>),
@@ -337,112 +337,14 @@ register_structs! {
     }
 }
 
+const SPI1_ADDR: *const SpiRegisterBlock = 0xFFF7_F400 as *const SpiRegisterBlock;
+const SPI2_ADDR: *const SpiRegisterBlock = 0xFFF7_F600 as *const SpiRegisterBlock;
+const SPI3_ADDR: *const SpiRegisterBlock = 0xFFF7_F800 as *const SpiRegisterBlock;
+const SPI4_ADDR: *const SpiRegisterBlock = 0xFFF7_FA00 as *const SpiRegisterBlock;
+const SPI5_ADDR: *const SpiRegisterBlock = 0xFFF7_FC00 as *const SpiRegisterBlock;
 
 
-#[allow(non_snake_case)]
-#[repr(C)]
-pub struct RegisterBlock {
-    // Global Control 0
-    GCR0: ReadWrite<u32, GCR0::Register>,
-    // Global Control 1
-    GCR1: ReadWrite<u32, GCR1::Register>,
-    // Interrupt Register
-    INT0: ReadWrite<u32, INT0::Register>,
-    // Interrupt Level
-    LVL: ReadWrite<u32, LVL::Register>,
-    // Interrupt flags
-    FLG: ReadWrite<u32, FLG::Register>,
-    // Function Pin Enable
-    PC0: ReadWrite<u32, PC0::Register>,
-    // Pin Direction
-    PC1: ReadWrite<u32>,
-    // Pin Input Latch
-    PC2: ReadWrite<u32>,
-    // Pin Output Latch
-    PC3: ReadWrite<u32>,
-    // Output Pin Set
-    PC4: ReadWrite<u32>,
-    // Output Pin Clr
-    PC5: ReadWrite<u32>,
-    // Open Drain Output Enable
-    PC6: ReadWrite<u32>,
-    // Pullup/Pulldown Disable
-    PC7: ReadWrite<u32>,
-    // Pullup/Pulldown Selection
-    PC8: ReadWrite<u32>,
-    // Transmit Data
-    DAT0: ReadWrite<u32>,
-    // Transmit Data with Format and Chip Select
-    DAT1: ReadWrite<u32>,
-    // Receive Buffer
-    BUF: ReadWrite<u32>,
-    // Emulation Receive Buffer
-    EMU: ReadWrite<u32>,
-    // Delays
-    DELAY: ReadWrite<u32>,
-    // Default Chip Select
-    DEF: ReadWrite<u32>,
-    // Data Format
-    FMT: [ReadWrite<u32>;4],
-    // Interrupt Vector
-    INTVECT: [ReadWrite<u32>;2],
-
-    SRSEL: ReadWrite<u32>,
-    // Slew Rate Select
-    PMCTRL: ReadWrite<u32>,
-    // Parallel Mode Control
-    MIBSPIE: ReadWrite<u32>,
-    // Multi-buffer Mode Enable
-    TGITENST: ReadWrite<u32>,
-    // TG Interrupt Enable Set
-    TGITENCR: ReadWrite<u32>,
-    // TG Interrupt Enable Clear
-    TGITLVST: ReadWrite<u32>,
-    // Transfer Group Interrupt Level Set
-    TGITLVCR: ReadWrite<u32>,
-    // Transfer Group Interrupt Level Clear
-    TGINTFLG: ReadWrite<u32>,
-    // Transfer Group Interrupt Flag
-    _reserved1: [u32; 2],
-    // Reserved
-    TICKCNT: ReadWrite<u32>,
-    // Tick Counter
-    LTGPEND: ReadWrite<u32>,
-    // Last TG End Pointer
-    TGCTRL: [ReadWrite<u32>; 16],
-    // Transfer Group Control
-    DMACTRL: [ReadWrite<u32>; 8],
-    // DMA Control
-    DMACOUNT: [ReadWrite<u32>; 8],
-    // DMA Count
-    DMACNTLEN: ReadWrite<u32>,
-    // DMA Control length
-    _reserved2: u32,
-    // Reserved
-    UERRCTRL: ReadWrite<u32>,
-    // Multi-buffer RAM Uncorrectable Parity Error Control
-    UERRSTAT: ReadWrite<u32>,
-    // Multi-buffer RAM Uncorrectable Parity Error Status
-    UERRADDRRX: ReadWrite<u32>,
-    // RXRAM Uncorrectable Parity Error Address
-    UERRADDRTX: ReadWrite<u32>,
-    // TXRAM Uncorrectable Parity Error Address
-    RXOVRN_BUF_ADDR: ReadWrite<u32>,
-    // RXRAM Overrun Buffer Address
-    IOLPKTSTCR: ReadWrite<u32>,
-    // IO loopback
-    EXT_PRESCALE1: ReadWrite<u32>,
-    EXT_PRESCALE2: ReadWrite<u32>,
-}
-
-const SPI1_ADDR: *const SpiRegisters = 0xFFF7_F400 as *const SpiRegisters;
-const SPI2_ADDR: *const SpiRegisters = 0xFFF7_F600 as *const SpiRegisters;
-const SPI3_ADDR: *const SpiRegisters = 0xFFF7_F800 as *const SpiRegisters;
-const SPI4_ADDR: *const SpiRegisters = 0xFFF7_FA00 as *const SpiRegisters;
-const SPI5_ADDR: *const SpiRegisters = 0xFFF7_FC00 as *const SpiRegisters;
-
-
-const SPI_ADDR: [*const SpiRegisters; 5] = [SPI1_ADDR, SPI2_ADDR, SPI3_ADDR, SPI4_ADDR, SPI5_ADDR];
+const SPI_ADDR: [*const SpiRegisterBlock; 5] = [SPI1_ADDR, SPI2_ADDR, SPI3_ADDR, SPI4_ADDR, SPI5_ADDR];
 
 
 #[derive(Copy, Clone)]
@@ -458,7 +360,7 @@ pub enum SpiID {
 #[allow(dead_code)]
 pub struct Spi {
     pub id: SpiID,
-    regs: &'static SpiRegisters,
+    regs: &'static SpiRegisterBlock,
     master: bool,
 }
 
@@ -496,15 +398,15 @@ impl Spi {
         spi
     }
     pub fn init(&self, master: bool) {
-        self.regs.GCR0.set(0x0);
-        self.regs.GCR0.set(0x1);
-        let CLOKMOD = 0x1 << 1;
+        self.regs.GCR0.write(GCR0::RESET::InReset);
+        self.regs.GCR0.write(GCR0::RESET::OutReset);
+        if master{
+            self.regs.GCR1.modify(GCR1::MASTER::Master+GCR1::CLKMOD::Internal);
+        }
 
-        let gcr1 = CLOKMOD | (master as u32);
-        self.regs.GCR1.set(self.regs.GCR1.get() | gcr1);
-
-        // startup the module
-        self.regs.GCR1.set(self.regs.GCR1.get() | 0x0100_0000);
+    }
+    pub fn open(&self){
+        self.regs.GCR1.modify(GCR1::SPIEN::SET);
     }
     pub fn preconf_format(&self, fmt_num: u8) {}
     pub fn set_delays(&self, C2T: u32, T2C: u32, T2E: u32, C2E: u32) {}
