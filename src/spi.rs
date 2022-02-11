@@ -397,18 +397,33 @@ impl Spi {
         spi.init(master);
         spi
     }
-    pub fn init(&self, master: bool) {
+    fn init(&self, master: bool) {
         self.regs.GCR0.write(GCR0::RESET::InReset);
         self.regs.GCR0.write(GCR0::RESET::OutReset);
         if master{
-            self.regs.GCR1.modify(GCR1::MASTER::Master+GCR1::CLKMOD::Internal);
+            self.regs.GCR1.modify(GCR1::MASTER::Master + GCR1::CLKMOD::Internal);
         }
 
     }
     pub fn open(&self){
         self.regs.GCR1.modify(GCR1::SPIEN::SET);
     }
-    pub fn preconf_format(&self, fmt_num: u8) {}
+    pub fn preconf_format(&mut self, fmt_num: u8) -> &mut Self {
+
+        self
+    }
+    pub fn loopback(&mut self, enable: bool)-> &mut Self{
+        if enable{
+            self.regs.GCR1.modify(GCR1::LOOPBACK::Enabled);
+        }
+        else { self.regs.GCR1.modify(GCR1::LOOPBACK::Disabled) }
+        self
+
+    }
     pub fn set_delays(&self, C2T: u32, T2C: u32, T2E: u32, C2E: u32) {}
-    pub fn set_prescaller(&self, prsc: u32) {}
+    pub fn set_prescaller(&mut self, prsc: u32) -> &mut Self {
+
+        self
+    }
+
 }
