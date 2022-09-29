@@ -332,7 +332,7 @@ register_structs! {
         (0x90=> TICKCNT : ReadWrite<u32, TICKCNT::Register>),
         (0x94=> LTGPEND : ReadWrite<u32, LTGPEND::Register>),
         (0x98=> TGCTRL : [ReadWrite<u32, TGCTRL::Register>; 8]), ///CHECK IT!!!!
-
+        (0xB8 => __reserved_2),
         (0x140 => @END),
     }
 }

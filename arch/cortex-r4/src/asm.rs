@@ -1,12 +1,12 @@
-extern "C" {
-    #[link_name = "llvm.arm.hint"]
-    fn hint(a: i32);
-}
+use core::arch::asm;
 
 /// NOP instruction
 #[inline(always)]
+//pub fn nop() {
+ //   unsafe { hint(0) };
+//}
 pub fn nop() {
-    unsafe { hint(0) };
+    unsafe { asm!("nop"); };
 }
 
 /// WFI (Wait For Interrupt) makes the processor suspend
@@ -17,6 +17,6 @@ pub fn nop() {
 ///    A Debug Entry request made to the processor.
 #[inline(always)]
 pub unsafe fn wfi() {
-    hint(2);
+    asm!("wfi");
 }
 
