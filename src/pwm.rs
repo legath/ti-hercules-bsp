@@ -154,7 +154,7 @@ impl Pwm{
         self.regs.TBCTR.set(Count);
     }
     pub fn setRunMode(&self, Mode: RunMode){
-        let mut temp_tbctl = self.regs.TBCTL.get();
+        let  temp_tbctl = self.regs.TBCTL.get();
         self.regs.TBCTL.set(temp_tbctl | Mode as u16);
     }
     pub fn setCmpA(&self, value: u16){

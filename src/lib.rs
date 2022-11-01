@@ -3,7 +3,7 @@
 
 #![crate_name = "tms570"]
 #![crate_type = "rlib"]
-#![feature(naked_functions)]
+//#![feature(naked_functions)]
 #![no_std]
 
 #[macro_use]

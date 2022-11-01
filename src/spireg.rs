@@ -1,6 +1,6 @@
 use vcell::VolatileCell;
 
-#[allow(non_snake_case)]
+
 pub_struct! (SpiRegisters {
     GCR0: VolatileCell<u32>,
     // Global Control 0
