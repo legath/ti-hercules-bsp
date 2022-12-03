@@ -1,6 +1,9 @@
 /// VCLK frequency [MHz]
-pub const VCLK: u32 = MHz!(220);
-
+///
+#[cfg(feature = "rm46lxxx")]
+pub const VCLK: u32 = MHz!(110);
+#[cfg(not(feature = "rm46lxxx"))]
+pub const VCLK: u32 = MHz!(80);
 /// LPO value to use if not available in OTP memory (Low-frequency trim value)
 ///
 /// Admitted values (forced to 1Fh if out of range):
@@ -15,7 +18,11 @@ pub const VCLK: u32 = MHz!(220);
 pub const LPO: u16 = 0x10;
 
 /// RTI1 Clock Frequency [MHz]
+///
+#[cfg(feature = "rm46lxxx")]
 pub const RTICLK1: u32 = MHz!(110);
+#[cfg(not(feature = "rm46lxxx"))]
+pub const RTICLK1: u32 = MHz!(80);
 
 /// LPC preload as used by the ESM driver
 pub const LPC_PRELOAD: u32 = 16384;

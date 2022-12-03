@@ -290,12 +290,22 @@ impl Sys {
         // - Setup reset on oscillator fail
         // - Setup reference clock divider
         // - Setup Pll multiplier
+        #[cfg(feature = "rm46lxxx")]
         let pll_ctl1 = 0x0000_0000
                     | 0x2000_0000
                     | (0x1F << 24)
                     | 0x0000_0000
                     | ((6 - 1) << 16)
-                    | (0x7700);
+                    | (0xA400);
+        #[cfg(not(feature = "rm46lxxx"))]
+            let pll_ctl1 = 0x0000_0000
+            | 0x2000_0000
+            | (0x1F << 24)
+            | 0x0000_0000
+            | ((6 - 1) << 16)
+            | (0x7700);
+
+
         self.sys1.pllctl1.set(pll_ctl1);
 
         // Setup pll control register 2:
@@ -303,6 +313,12 @@ impl Sys {
         // - Setup bandwidth adjustment
         // - Setup internal Pll output divider
         // - Setup spreading amount
+        #[cfg(not(feature = "rm46lxxx"))]
+        let pll_ctl2 = (255 << 22)
+                    | (7 << 12)
+                    | ((2 - 1) << 9)
+                    | 61;
+        #[cfg(feature = "rm46lxxx")]
         let pll_ctl2 = (255 << 22)
                     | (7 << 12)
                     | ((2 - 1) << 9)
@@ -314,10 +330,16 @@ impl Sys {
         // - Setup reference clock divider
         // - Setup internal Pll output divider
         // - Setup Pll multiplier
+        #[cfg(not(feature = "rm46lxxx"))]
         let pll_ctl3 = ((2 - 1) << 29)
                         | (0x1F << 24)
                         | ((6 - 1)<< 16)
                         | (0x7700);
+        #[cfg(feature = "rm46lxxx")]
+        let pll_ctl3 = ((2 - 1) << 29)
+                        | (0x1F << 24)
+                        | ((6 - 1)<< 16)
+                        | (0xA400);
         self.sys2.pllctl3.set(pll_ctl3);
 
         self.enable_pll()
